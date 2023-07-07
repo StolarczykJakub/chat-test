@@ -85,15 +85,12 @@ class _Idle extends HookWidget {
     print("** REBUILD");
 
     useEffect(() {
-      print("** scrollController.hasClient ${scrollController.hasClients}");
-      if (scrollController.hasClients){
-        scrollController.animateTo(
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(
           scrollController.position.maxScrollExtent,
-          curve: Curves.easeOut,
-          duration: const Duration(milliseconds: 200),
         );
       }
-    }, [messages]);
+    }, [messages.length]);
 
     return Column(
       children: [
@@ -109,57 +106,11 @@ class _Idle extends HookWidget {
           ),
         ),
         if (state.isTyping) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppDimens.eight,
-              horizontal: AppDimens.sixteen,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const CircleAvatar(),
-                const AppGap.eight(),
-                Container(
-                  padding: const EdgeInsets.all(AppDimens.twelve),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: const Text(
-                    'is typing...',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const _IsTyping(),
         ],
-        Padding(
-          padding: const EdgeInsets.all(AppDimens.twenty),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: inputController,
-                  decoration: InputDecoration(
-                    hintText: 'Type a message...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppDimens.twenty),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: AppDimens.sixteen),
-                  ),
-                ),
-              ),
-              const AppGap.eight(),
-              FloatingActionButton(
-                onPressed: () {
-                  cubit.sendMessage(inputController.text);
-                  inputController.clear();
-                },
-                child: const Icon(Icons.send),
-              ),
-            ],
-          ),
+        _MessageInput(
+          inputController: inputController,
+          cubit: cubit,
         ),
       ],
     );
@@ -216,12 +167,14 @@ class _Idle extends HookWidget {
               ),
             ),
           ),
-          if (isMe) const SizedBox(width: 36.0),
+          if (isMe) const AppGap.thirtyTwo(),
         ],
       ),
     );
   }
 }
+
+/// Those widgets can be moved to separate file of course, depends on preference
 
 class _Loading extends StatelessWidget {
   const _Loading({Key? key}) : super(key: key);
@@ -230,6 +183,80 @@ class _Loading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: CircularProgressIndicator(color: Colors.blueAccent),
+    );
+  }
+}
+
+class _IsTyping extends StatelessWidget {
+  const _IsTyping({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: AppDimens.eight,
+        horizontal: AppDimens.sixteen,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const CircleAvatar(),
+          const AppGap.eight(),
+          Container(
+            padding: const EdgeInsets.all(AppDimens.twelve),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(AppDimens.sixteen),
+            ),
+            child: const Text(
+              'is typing...',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MessageInput extends StatelessWidget {
+  const _MessageInput({
+    required this.inputController,
+    required this.cubit,
+    Key? key,
+  }) : super(key: key);
+
+  final TextEditingController inputController;
+  final ConversationPageCubit cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppDimens.twenty),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: inputController,
+              decoration: InputDecoration(
+                hintText: 'Type a message...',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppDimens.twenty),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: AppDimens.sixteen),
+              ),
+            ),
+          ),
+          const AppGap.eight(),
+          FloatingActionButton(
+            onPressed: () {
+              cubit.sendMessage(inputController.text);
+              inputController.clear();
+            },
+            child: const Icon(Icons.send),
+          ),
+        ],
+      ),
     );
   }
 }

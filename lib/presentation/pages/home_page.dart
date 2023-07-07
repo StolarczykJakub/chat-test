@@ -25,7 +25,9 @@ class HomePage extends HookWidget {
       cubit,
       (action) => {
         action.when(
-          navigateToConversation: (conversation) => context.router.push(ConversationRoute(conversation: conversation)),
+          navigateToConversation: (conversation) => context.router.push(
+            ConversationRoute(conversation: conversation),
+          ),
           error: (errorMessage) => _handleError(errorMessage, context),
         )
       },
@@ -54,7 +56,10 @@ class HomePage extends HookWidget {
                   onRefresh: () => cubit.getConversations(),
                   child: ListView.builder(
                     itemCount: conversationList.length,
-                    itemBuilder: (BuildContext context, int index) => _conversationItem(conversationList[index], cubit),
+                    itemBuilder: (BuildContext context, int index) => _conversationItem(
+                      conversationList[index],
+                      cubit,
+                    ),
                   ),
                 ),
               ),
@@ -75,7 +80,7 @@ class HomePage extends HookWidget {
       child: Card(
         elevation: AppDimens.four,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(AppDimens.twelve),
         ),
         child: ListTile(
           contentPadding: const EdgeInsets.all(AppDimens.sixteen),
@@ -89,7 +94,7 @@ class HomePage extends HookWidget {
           subtitle: Text(conversation.lastMessage),
           trailing: Text(
             conversation.modifiedAt.formatTimestamp(),
-            style: const TextStyle(fontSize: 12.0, color: Colors.grey),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
           onTap: () => cubit.openConversation(conversation),
         ),

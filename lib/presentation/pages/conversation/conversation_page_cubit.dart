@@ -64,6 +64,7 @@ class ConversationPageCubit extends ActionCubit<ConversationPageState, Conversat
         .toList();
     senders.shuffle();
 
+    //TODO: Upgrade to stream with switchMap (to cancel previous Message)
     await Future.delayed(const Duration(seconds: 2), () {
       final messageCreationDate = DateTime.now().millisecondsSinceEpoch;
       _messages.add(
