@@ -43,30 +43,28 @@ class HomePage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chat PAGE"),
+        title: const Text("Chat App"),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const AppGap.twelve(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(AppDimens.twenty),
-                child: RefreshIndicator(
-                  onRefresh: () => cubit.getConversations(),
-                  child: ListView.builder(
-                    itemCount: conversationList.length,
-                    itemBuilder: (BuildContext context, int index) => _conversationItem(
-                      conversationList[index],
-                      cubit,
-                    ),
+      body: Column(
+        children: [
+          const AppGap.twelve(),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(AppDimens.twelve),
+              child: RefreshIndicator(
+                onRefresh: () => cubit.getConversations(),
+                child: ListView.builder(
+                  itemCount: conversationList.length,
+                  itemBuilder: (BuildContext context, int index) => _conversationItem(
+                    conversationList[index],
+                    cubit,
                   ),
                 ),
               ),
             ),
-            const AppGap.twelve(),
-          ],
-        ),
+          ),
+          const AppGap.twelve(),
+        ],
       ),
     );
   }
@@ -82,21 +80,27 @@ class HomePage extends HookWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimens.twelve),
         ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(AppDimens.sixteen),
-          leading: CircleAvatar(
-            child: Text(conversation.members.length.toString()),
-          ),
-          title: Text(
-            conversation.topic,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(conversation.lastMessage),
-          trailing: Text(
-            conversation.modifiedAt.formatTimestamp(),
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+        child: InkWell(
+          customBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimens.twelve),
           ),
           onTap: () => cubit.openConversation(conversation),
+          splashColor: Colors.grey,
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(AppDimens.sixteen),
+            leading: CircleAvatar(
+              child: Text(conversation.members.length.toString()),
+            ),
+            title: Text(
+              conversation.topic,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(conversation.lastMessage * 4),
+            trailing: Text(
+              conversation.modifiedAt.formatTimestamp(),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ),
         ),
       ),
     );

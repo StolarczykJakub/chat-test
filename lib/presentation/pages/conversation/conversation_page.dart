@@ -6,10 +6,10 @@ import 'package:chat_programming_test/presentation/pages/conversation/conversati
 import 'package:chat_programming_test/presentation/pages/conversation/conversation_page_state.dart';
 import 'package:chat_programming_test/presentation/style/app_dimens.dart';
 import 'package:chat_programming_test/presentation/style/app_gaps.dart';
+import 'package:chat_programming_test/presentation/utils/extensions/int_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooked_bloc/hooked_bloc.dart';
-import 'package:chat_programming_test/presentation/utils/extensions/int_extensions.dart';
 
 @RoutePage()
 class ConversationPage extends HookWidget {
@@ -82,7 +82,6 @@ class _Idle extends HookWidget {
     final messages = state.messages ?? [];
     final inputController = useTextEditingController();
     final scrollController = useScrollController();
-    print("** REBUILD");
 
     useEffect(() {
       if (scrollController.hasClients) {
