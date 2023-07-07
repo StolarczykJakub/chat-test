@@ -42,6 +42,7 @@ class AppGap extends StatelessWidget {
   const AppGap.eighty({super.key}) : gapSize = AppDimens.eighty;
 
   final double gapSize;
+
   @override
   Widget build(BuildContext context) {
     return Gap(gapSize);

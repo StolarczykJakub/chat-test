@@ -5,7 +5,7 @@ part 'home_page_state.freezed.dart';
 
 @freezed
 class HomePageState with _$HomePageState {
-
   const factory HomePageState.idle({required List<Conversation>? conversationList}) = HomePageStateIdle;
+
   const factory HomePageState.loading() = HomePageStateLoading;
 }

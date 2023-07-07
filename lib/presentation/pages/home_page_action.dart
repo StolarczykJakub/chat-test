@@ -1,7 +1,7 @@
 import 'package:chat_programming_test/domain/models/conversation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part  'home_page_action.freezed.dart';
+part 'home_page_action.freezed.dart';
 
 @freezed
 class HomePageAction with _$HomePageAction {

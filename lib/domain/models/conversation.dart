@@ -1,4 +1,3 @@
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'conversation.freezed.dart';
@@ -9,7 +8,7 @@ class Conversation with _$Conversation {
     required String id,
     required String lastMessage,
     required List<String> members,
-    required  String topic,
+    required String topic,
     required int modifiedAt,
   }) = _Conversation;
 }

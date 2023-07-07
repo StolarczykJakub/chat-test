@@ -26,17 +26,12 @@ class ConversationsRepositoryImpl extends ConversationsRepository {
   @override
   Future<List<Conversation>> getConversations() async {
     try {
-      final plainTextJson = await conversationsRemoteDataSource.getConversations();
-      List<ConversationDto> conversationDtoList;
-      if (isJSON(plainTextJson)) {
-        conversationDtoList = json.decode(plainTextJson);
-      } else {
-        final fixedJsonResponse = fixJson(plainTextJson);
-        conversationDtoList =
-            fixedJsonResponse.map((conversationJson) => ConversationDto.fromJson(conversationJson)).toList();
-      }
+      final responsePlainText = await conversationsRemoteDataSource.getConversations();
+      final jsonResponse = jsonDecode(responsePlainText) as List;
+      final conversationDtoList =
+          jsonResponse.map((conversationJson) => ConversationDto.fromJson(conversationJson)).toList();
 
-      return conversationDtoList.map((e) => mapConversationFromDto(e)).toList();
+      return conversationDtoList.map((conversationDto) => mapConversationFromDto(conversationDto)).toList();
     } catch (e) {
       logger.e(e.toString());
       rethrow;
@@ -47,13 +42,8 @@ class ConversationsRepositoryImpl extends ConversationsRepository {
   Future<List<Message>> getMessages(String id) async {
     try {
       final plainTextJson = await conversationsRemoteDataSource.getMessages(id);
-      List<MessageDto> messageDtoList;
-      if (isJSON(plainTextJson)) {
-        messageDtoList = json.decode(plainTextJson);
-      } else {
-        final fixedJsonResponse = fixJson(plainTextJson);
-        messageDtoList = fixedJsonResponse.map((conversationJson) => MessageDto.fromJson(conversationJson)).toList();
-      }
+      final jsonResponse = jsonDecode(plainTextJson) as List;
+      final messageDtoList = jsonResponse.map((conversationJson) => MessageDto.fromJson(conversationJson)).toList();
 
       return messageDtoList.map((e) => mapMessageFromDto(e)).toList();
     } catch (e) {
@@ -61,22 +51,4 @@ class ConversationsRepositoryImpl extends ConversationsRepository {
       rethrow;
     }
   }
-}
-
-/// Dirty hack remove comma on badly formatted response
-List<dynamic> fixJson(String plainTextJson) {
-  String trimmedJson = plainTextJson.substring(0, plainTextJson.lastIndexOf(','));
-  final plainTextJsonWithoutComma = "$trimmedJson]"; // third from end is comma
-  final fixedJsonResponse = jsonDecode(plainTextJsonWithoutComma) as List;
-
-  return fixedJsonResponse;
-}
-
-bool isJSON(str) {
-  try {
-    jsonDecode(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
 }

@@ -43,7 +43,7 @@ class HomePage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chat App"),
+        title: const Text("Chat App by Jakub S"),
       ),
       body: Column(
         children: [

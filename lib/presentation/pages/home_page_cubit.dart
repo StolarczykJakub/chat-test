@@ -29,7 +29,7 @@ class HomePageCubit extends ActionCubit<HomePageState, HomePageAction> {
     } catch (e) {
       logger.e(e);
       dispatch(HomePageAction.error(e.toString()));
-      emit( const HomePageState.idle(conversationList: null));
+      emit(const HomePageState.idle(conversationList: null));
     }
   }
 

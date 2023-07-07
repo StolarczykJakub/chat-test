@@ -1,10 +1,6 @@
-import 'package:chat_programming_test/domain/models/conversation.dart';
-import 'package:chat_programming_test/infrastructure/conversations/mappers/conversation_mapper.dart';
 import 'package:chat_programming_test/infrastructure/conversations/mappers/message_mapper.dart';
-import 'package:chat_programming_test/infrastructure/conversations/models/conversation_dto.dart';
 import 'package:chat_programming_test/infrastructure/conversations/models/message_dto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 
 void main() {
   group('MessagesFromDtoMapper', () {

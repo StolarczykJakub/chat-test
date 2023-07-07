@@ -85,28 +85,41 @@ class _Idle extends HookWidget {
 
     useEffect(() {
       if (scrollController.hasClients) {
-        scrollController.jumpTo(
-          scrollController.position.maxScrollExtent,
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(
+            scrollController.position.maxScrollExtent,
+          );
+        });
       }
     }, [messages.length]);
 
     return Column(
       children: [
-        const AppGap.twenty(),
         Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => cubit.getConversations(),
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: messages.length,
-              itemBuilder: (context, index) => _messageItem(messages[index]),
-            ),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: RefreshIndicator(
+                  onRefresh: () => cubit.getConversations(),
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final isLast = index == messages.length - 1;
+                      return _messageItem(messages[index], isLast);
+                    },
+                  ),
+                ),
+              ),
+              if (state.isTyping) ...[
+                const Positioned(
+                  bottom: 0,
+                  child: _IsTyping(),
+                ),
+              ],
+            ],
           ),
         ),
-        if (state.isTyping) ...[
-          const _IsTyping(),
-        ],
         _MessageInput(
           inputController: inputController,
           cubit: cubit,
@@ -115,7 +128,10 @@ class _Idle extends HookWidget {
     );
   }
 
-  Widget _messageItem(Message message) {
+  Widget _messageItem(
+    Message message,
+    bool isLast,
+  ) {
     bool isMe = message.sender == 'Me';
 
     return Padding(
@@ -123,50 +139,59 @@ class _Idle extends HookWidget {
         horizontal: AppDimens.sixteen,
         vertical: AppDimens.eight,
       ),
-      child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      child: Column(
         children: [
-          if (!isMe) ...[
-            CircleAvatar(
-              child: Text(message.sender[0]),
-            ),
-          ],
-          const AppGap.eight(),
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.all(AppDimens.twelve),
-              decoration: BoxDecoration(
-                color: isMe ? Colors.blue : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(AppDimens.sixteen),
+          Row(
+            mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              if (!isMe) ...[
+                CircleAvatar(
+                  child: Text(message.sender[0]),
+                ),
+              ],
+              const AppGap.eight(),
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.all(AppDimens.twelve),
+                  decoration: BoxDecoration(
+                    color: isMe ? Colors.blue : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(AppDimens.sixteen),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        message.sender,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isMe ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      const AppGap.four(),
+                      Text(
+                        message.message,
+                        style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                      ),
+                      const AppGap.four(),
+                      Text(
+                        message.modifiedAt.formatTimestamp(),
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: isMe ? Colors.white70 : Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message.sender,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isMe ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  const AppGap.four(),
-                  Text(
-                    message.message,
-                    style: TextStyle(color: isMe ? Colors.white : Colors.black),
-                  ),
-                  const AppGap.four(),
-                  Text(
-                    message.modifiedAt.formatTimestamp(),
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: isMe ? Colors.white70 : Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+              if (isMe) ...[
+                const AppGap.twentyFour(),
+              ],
+            ],
           ),
-          if (isMe) const AppGap.thirtyTwo(),
+          if (state.isTyping && isLast) ...[
+            const AppGap.fortyEight(),
+          ],
         ],
       ),
     );
@@ -230,32 +255,41 @@ class _MessageInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppDimens.twenty),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: inputController,
-              decoration: InputDecoration(
-                hintText: 'Type a message...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppDimens.twenty),
+    return Column(
+      children: [
+        Container(
+          height: AppDimens.one,
+          color: Colors.black45,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(AppDimens.twenty),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  autofocus: true,
+                  controller: inputController,
+                  decoration: InputDecoration(
+                    hintText: 'Type a message...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppDimens.twenty),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: AppDimens.sixteen),
+                  ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: AppDimens.sixteen),
               ),
-            ),
+              const AppGap.eight(),
+              FloatingActionButton.small(
+                onPressed: () {
+                  cubit.sendMessage(inputController.text);
+                  inputController.clear();
+                },
+                child: const Icon(Icons.send),
+              ),
+            ],
           ),
-          const AppGap.eight(),
-          FloatingActionButton(
-            onPressed: () {
-              cubit.sendMessage(inputController.text);
-              inputController.clear();
-            },
-            child: const Icon(Icons.send),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
