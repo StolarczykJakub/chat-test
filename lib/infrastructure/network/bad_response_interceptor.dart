@@ -8,9 +8,7 @@ import 'package:injectable/injectable.dart';
 class BadResponseInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // Do something with response data.
-    // If you want to reject the request with a error message,
-    // you can reject a `DioException` object using `handler.reject(dioError)`.
+    /// This is the solution to an (intentional?) wrong response from the backend
     /// Dirty hack remove comma on badly formatted response (inform backend about bad format)
     if (!isJSON(response.data)) {
       final fixedJsonResponse = _fixJson(response.data);

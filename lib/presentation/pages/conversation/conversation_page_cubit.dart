@@ -55,7 +55,7 @@ class ConversationPageCubit extends ActionCubit<ConversationPageState, Conversat
   Future<void> _mockSenderResponse() async {
     emit(ConversationPageState.idle(messages: _messages, isTyping: true));
 
-    /// We will get message from random sender :D
+    // We will get message from random sender :D
     final senders = _messages
         .where(
           (element) => element.sender != "Me",

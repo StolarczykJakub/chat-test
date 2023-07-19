@@ -13,9 +13,9 @@ import 'package:hooked_bloc/hooked_bloc.dart';
 
 @RoutePage()
 class ConversationPage extends HookWidget {
-  // ignore: use_key_in_widget_constructors
   const ConversationPage({
     required this.conversation,
+    super.key,
   });
 
   final Conversation conversation;

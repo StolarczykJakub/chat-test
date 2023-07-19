@@ -12,7 +12,7 @@ import 'package:chat_programming_test/presentation/app_logger.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: ConversationsRepository)
-class ConversationsRepositoryImpl extends ConversationsRepository {
+class ConversationsRepositoryImpl implements ConversationsRepository {
   ConversationsRepositoryImpl(
     this.conversationsRemoteDataSource,
     this.mapConversationFromDto,

@@ -3,7 +3,7 @@ import 'package:chat_programming_test/domain/models/conversation.dart';
 import 'package:chat_programming_test/presentation/pages/home_page_action.dart';
 import 'package:chat_programming_test/presentation/pages/home_page_cubit.dart';
 import 'package:chat_programming_test/presentation/pages/home_page_state.dart';
-import 'package:chat_programming_test/presentation/router/main_router.dart';
+import 'package:chat_programming_test/presentation/router/main_router.gr.dart';
 import 'package:chat_programming_test/presentation/style/app_dimens.dart';
 import 'package:chat_programming_test/presentation/style/app_gaps.dart';
 import 'package:chat_programming_test/presentation/utils/extensions/int_extensions.dart';
@@ -43,7 +43,7 @@ class HomePage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chat App by Jakub S"),
+        title: const Text("Fake Chat App by Jakub S"),
       ),
       body: Column(
         children: [
