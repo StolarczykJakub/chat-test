@@ -199,7 +199,6 @@ class _Idle extends HookWidget {
 }
 
 /// Those widgets can be moved to separate file of course, depends on preference
-
 class _Loading extends StatelessWidget {
   const _Loading({Key? key}) : super(key: key);
 

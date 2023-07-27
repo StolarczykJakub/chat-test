@@ -46,7 +46,7 @@ class ConversationPageCubit extends ActionCubit<ConversationPageState, Conversat
         sender: "Me",
       ),
     );
-    emit(const ConversationPageState.loading()); //TODO: IMPROVE THIS (TEMP TO FORCE REBUILD)
+
     emit(ConversationPageState.idle(messages: _messages));
 
     _mockSenderResponse();
